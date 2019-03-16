@@ -14,12 +14,14 @@ const moment = require('moment')
 });*/
 
 // config sql(remote)
+let secretObj = require(__dirname+'/mysqlConfig.js');
+console.log(secretObj);
 var conn = mysql.createPool({
-  host:'',
-  user:'',
-  password:'',
-  database:''
-})
+  host:secretObj.host,
+  user:secretObj.user,
+  password:secretObj.password,
+  database:secretObj.database
+});
 
 app.use('/static', express.static('static'));
 app.set('views', __dirname + '/templates');
@@ -36,7 +38,7 @@ app.get('/', function (req, res) {
   }else{
     recordVisitor(null,null,null);
   }
-  console.log(geo);
+  //console.log(geo);
 
   res.render('home.html');
 });
@@ -49,16 +51,11 @@ A function that stores information of visitor based on their IP address
 function recordVisitor(ip, city, country){
   const time = moment().format('YYYY-MM-DD kk:mm:ss');
 
-  conn.connect(function(err) {
+  conn.query("insert into visitor (ip, city, country, date) values (?,?,?,?)",[ip, city, country, time], function (err, result, fields) {
     if (err) {
       console.log(err);
     }
-    conn.query("insert into visitor (ip, city, country, date) values (ip, city, country, time)", function (err, result, fields) {
-      if (err) {
-        console.log(err);
-      }
-      console.log(result);
-    });
+    //console.log(result);
   });
 }
 
