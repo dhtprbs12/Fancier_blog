@@ -9,16 +9,16 @@ const moment = require('moment')
 /*var conn = mysql.createConnection({
   host: "localhost",
   user: "sekyunoh",
-  password: "Dhtp12rbs.",
+  password: "",
   database: "blog"
 });*/
 
 // config sql(remote)
 var conn = mysql.createPool({
-  host:'myuniversity.c6e8q4vo7yet.us-west-1.rds.amazonaws.com',
-  user:'sekyunoh',
-  password:'Dhtp123rbs.',
-  database:'blog'
+  host:'',
+  user:'',
+  password:'',
+  database:''
 })
 
 app.use('/static', express.static('static'));
