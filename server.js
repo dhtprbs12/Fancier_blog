@@ -5,13 +5,21 @@ const mysql = require('mysql');
 const moment = require('moment')
 
 
-// config sql
-var con = mysql.createConnection({
+// config sql(local)
+/*var conn = mysql.createConnection({
   host: "localhost",
   user: "sekyunoh",
   password: "Dhtp12rbs.",
   database: "blog"
-});
+});*/
+
+// config sql(remote)
+var conn = mysql.createPool({
+  host:'myuniversity.c6e8q4vo7yet.us-west-1.rds.amazonaws.com',
+  user:'sekyunoh',
+  password:'Dhtp123rbs.',
+  database:'blog'
+})
 
 app.use('/static', express.static('static'));
 app.set('views', __dirname + '/templates');
@@ -20,7 +28,7 @@ app.engine('html', require('ejs').renderFile);
 //Home
 app.get('/', function (req, res) {
   // get ip address
-  let ip = req.connection.remoteAddress.split(`:`).pop();
+  let ip = req.headers['x-forwarded-for'];
   // loop up ip and get information
   let geo = geoip.lookup(ip);
   if(geo != null){
@@ -41,11 +49,11 @@ A function that stores information of visitor based on their IP address
 function recordVisitor(ip, city, country){
   const time = moment().format('YYYY-MM-DD kk:mm:ss');
 
-  con.connect(function(err) {
+  conn.connect(function(err) {
     if (err) {
       console.log(err);
     }
-    con.query("insert into visitor (ip, city, country, date) values (ip, city, country, time)", function (err, result, fields) {
+    conn.query("insert into visitor (ip, city, country, date) values (ip, city, country, time)", function (err, result, fields) {
       if (err) {
         console.log(err);
       }
